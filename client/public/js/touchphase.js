@@ -4,5 +4,5 @@ export const TouchPhase = {
     Moved: 2,
     Ended: 3,
     Canceled: 4,
-    Stationary: 5
-  };
+    Stationary: 5,
+};

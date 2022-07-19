@@ -1,0 +1,21 @@
+name: Node CD
+
+on: [push]
+
+jobs:
+    pack:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: npm ci and pack
+              run: |
+                  npm ci
+                  npm run pack
+
+            - name: Upload packaged binaries
+              uses: actions/upload-artifact@v3
+              with:
+                  name: Binaries
+                  path: dist/*
