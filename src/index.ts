@@ -6,7 +6,7 @@ import * as fs from "fs";
 import * as os from "os";
 import { createServer } from "./server";
 import { AddressInfo } from "net";
-import WSSignaling from "./websocket";
+import { WSSignaling, WSProxy } from "./websocket";
 import Options from "./class/options";
 
 export class RenderStreaming {
@@ -47,6 +47,11 @@ export class RenderStreaming {
                         process.env.MODE || "public"
                     )
                     .option(
+                        "--encoder-renderer-proxy",
+                        "Create proxy from renderer and encoder",
+                        process.env.ENCODER_RENDERER_PROXY || false
+                    )
+                    .option(
                         "-l, --logging <type>",
                         "Choose http logging type combined, dev, short, tiny or none.(default dev)",
                         process.env.LOGGING || "dev"
@@ -63,6 +68,7 @@ export class RenderStreaming {
                             ? false
                             : option.websocket,
                     mode: option.mode,
+                    encoderRendererProxy: option.encoderRendererProxy,
                     logging: option.logging,
                 };
             }
@@ -76,6 +82,9 @@ export class RenderStreaming {
     public server?: Server;
 
     public options: Options;
+
+    private WSSignalingInstance: WSSignaling;
+    private WSProxyInstance: WSProxy;
 
     constructor(options: Options) {
         this.options = options;
@@ -113,8 +122,46 @@ export class RenderStreaming {
                 }`
             );
             //Start Websocket Signaling server
-            new WSSignaling(this.server, this.options.mode);
+            this.WSSignalingInstance = new WSSignaling(this.options.mode);
         }
+
+        if (this.options.encoderRendererProxy) {
+            //Start Websocket Proxy server
+            this.WSProxyInstance = new WSProxy();
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const that = this;
+        this.server.on("upgrade", function upgrade(request, socket, head) {
+            const baseURL =
+                request.protocol + "://" + request.headers.host + "/";
+            const { pathname } = new URL(request.url, baseURL);
+
+            let wss: any;
+            if (pathname === "/" && that.WSSignalingInstance) {
+                wss = that.WSSignalingInstance.getWebsocketServer();
+                wss.handleUpgrade(
+                    request,
+                    socket,
+                    head,
+                    function done(ws: any) {
+                        wss.emit("connection", ws, request);
+                    }
+                );
+            } else if (pathname.startsWith("/proxy") && that.WSProxyInstance) {
+                wss = that.WSProxyInstance.getWebsocketServer();
+                wss.handleUpgrade(
+                    request,
+                    socket,
+                    head,
+                    function done(ws: any) {
+                        wss.emit("connection", ws, request);
+                    }
+                );
+            } else {
+                socket.destroy();
+            }
+        });
 
         console.log(`start as ${this.options.mode} mode`);
     }

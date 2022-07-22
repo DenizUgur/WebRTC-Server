@@ -5,5 +5,6 @@ export default interface Options {
     certfile?: string;
     websocket?: boolean;
     mode?: string;
+    encoderRendererProxy?: boolean;
     logging?: string;
 }
