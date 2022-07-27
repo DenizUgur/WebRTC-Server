@@ -1,5 +1,5 @@
 import time
-from pc import *
+from lib.pc import *
 
 if __name__ == "__main__":
     # Instantiate ProxyConnection with host, port and frequency
