@@ -3,7 +3,7 @@ from lib.pc import *
 
 if __name__ == "__main__":
     # Instantiate ProxyConnection with host, port and frequency
-    PC = ProxyConnection("localhost", 80, 1)
+    PC = ProxyConnection("localhost", 8080, 1)
 
     while True:
         # Prepare payload data
