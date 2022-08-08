@@ -1,5 +1,4 @@
 import * as express from "express";
-import * as bodyParser from "body-parser";
 import * as path from "path";
 import * as fs from "fs";
 import * as morgan from "morgan";
@@ -15,9 +14,8 @@ export const createServer = (config: Options): express.Application => {
     if (config.logging != "none") {
         app.use(morgan(config.logging));
     }
-    // const signal = require('./signaling');
-    app.use(bodyParser.urlencoded({ extended: true }));
-    app.use(bodyParser.json());
+    app.use(express.urlencoded({ extended: true }));
+    app.use(express.json());
     app.get("/config", (req, res) =>
         res.json({
             useWebSocket: config.websocket,
@@ -26,11 +24,11 @@ export const createServer = (config: Options): express.Application => {
         })
     );
     app.use("/signaling", signaling);
-    app.use(express.static(path.join(__dirname, "../client/public")));
+    app.use(express.static(path.join(__dirname, "../client/build")));
     app.get("/", (req, res) => {
         const indexPagePath: string = path.join(
             __dirname,
-            "../client/public/index.html"
+            "../client/build/index.html"
         );
         fs.access(indexPagePath, (err) => {
             if (err) {

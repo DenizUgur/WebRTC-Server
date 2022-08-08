@@ -5,16 +5,15 @@
     "scripts": {
         "prestart": "npm install",
         "build": "tsc",
+        "build:client": "npm run --prefix client/ build",
         "start": "node ./build/index.js",
-        "dev": "ts-node ./src/index.ts --encoder-renderer-proxy -w",
+        "dev": "npm run build:client && ts-node ./src/index.ts -w -p 8080 --encoder-renderer-proxy",
         "lint": "prettier --check . && eslint src/**/*.ts",
-        "prepack": "npm run lint && npm run build",
+        "format": "prettier --write .",
+        "prepack": "npm run lint && npm run build:client && npm run build",
         "pack": "pkg ."
     },
     "dependencies": {
-        "@types/express": "^4.17.13",
-        "@types/node": "^11.15.54",
-        "@types/ws": "^8.5.3",
         "async-mutex": "^0.3.2",
         "commander": "^9.4.0",
         "express": "~4.16.4",
@@ -23,7 +22,10 @@
         "ws": "^8.8.1"
     },
     "devDependencies": {
+        "@types/express": "^4.17.13",
         "@types/morgan": "^1.9.3",
+        "@types/node": "^11.15.54",
+        "@types/ws": "^8.5.3",
         "@typescript-eslint/eslint-plugin": "^2.34.0",
         "@typescript-eslint/parser": "^2.34.0",
         "eslint": "^6.8.0",
@@ -37,7 +39,7 @@
     },
     "pkg": {
         "assets": [
-            "client/public/**/*"
+            "client/build/**/*"
         ],
         "targets": [
             "node10-macos",
