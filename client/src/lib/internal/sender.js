@@ -101,6 +101,8 @@ export class Sender extends LocalInputManager {
     }
 
     addGamepad() {
+        return;
+        // eslint-disable-next-line no-unreachable
         const descriptionGamepad = {
             m_InterfaceName: "RawInput",
             m_DeviceClass: "Gamepad",
