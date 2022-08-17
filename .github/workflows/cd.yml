@@ -12,6 +12,7 @@ jobs:
             - name: npm ci and pack
               run: |
                   npm ci
+                  npm --prefix ./client ci
                   npm run pack
 
             - name: Upload packaged binaries
@@ -19,3 +20,4 @@ jobs:
               with:
                   name: Binaries
                   path: dist/*
+                  retention-days: 1

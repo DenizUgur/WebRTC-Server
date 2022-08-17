@@ -40,7 +40,6 @@ async function setupVideoPlayer(elements, codecs, codecMimeType) {
         if (preferredCodec.value !== "") {
             const { mimeType, sdpFmtpLine } = preferredCodec;
             const { codecs } = RTCRtpSender.getCapabilities("video");
-            console.error(codecs);
             const selectedCodecIndex = codecs.findIndex(
                 (c) => c.mimeType === mimeType && c.sdpFmtpLine === sdpFmtpLine
             );
@@ -50,7 +49,6 @@ async function setupVideoPlayer(elements, codecs, codecMimeType) {
     }
 
     await receiver.setupConnection(useWebSocket, selectedCodecs);
-    console.log(receiver);
     return receiver;
 }
 

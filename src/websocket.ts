@@ -102,12 +102,6 @@ class WSProxy extends WSS {
                     return;
                 }
 
-                console.log();
-                console.log("Path:", request.url);
-                console.log("Payload: ", payload);
-                console.log("Encoder:", this.encoderData);
-                console.log("Renderer: ", this.rendererData);
-
                 await this.mutex.runExclusive(async () => {
                     if (request.url == "/proxy/encoder") {
                         this.encoderData.read = {
