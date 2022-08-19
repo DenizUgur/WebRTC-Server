@@ -83,7 +83,7 @@ class WSProxy extends WSS {
             shadowCascades: 4,
             shadowDistance: 150,
             softParticles: true,
-            vSyncCount: 1,
+            vSyncCount: 0,
             targetFrameRate: 60,
         }, // write data to renderer
     };

@@ -132,7 +132,7 @@ export class RenderStreaming {
 
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const that = this;
-        this.server.on("upgrade", function upgrade(request, socket, head) {
+        this.server.on("upgrade", function upgrade(request: any, socket, head) {
             const baseURL =
                 request.protocol + "://" + request.headers.host + "/";
             const { pathname } = new URL(request.url, baseURL);

@@ -7,14 +7,14 @@ if __name__ == "__main__":
     while True:
         time.sleep(1)
 
-        bps = input("Enter bitrate (bit/s): ")
-        if bps == "":
-            continue
-
         data = {
+            "renderer": {
+                "vSyncCount": 0,
+                "targetFrameRate": 30,
+            },
             "encoder": {
-                "encoder_bitrate": int(bps),
-                "encoder_fps": 60.0,
+                "encoder_bitrate": 10_000_000,
+                "encoder_fps": 30.0,
             }
         }
 

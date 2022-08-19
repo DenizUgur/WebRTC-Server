@@ -1,52 +1,21 @@
 {
-    "name": "webserver",
-    "version": "3.1.0",
-    "private": true,
+    "name": "webrtc-server",
+    "description": "Webserver using WebRTC for steaming and WebSockets for signaling",
+    "version": "1.0.0",
+    "author": "",
+    "license": "ISC",
     "scripts": {
-        "prestart": "npm install",
-        "build": "tsc",
-        "build:client": "npm run --prefix client/ build",
-        "start": "node ./build/index.js",
-        "dev": "npm run build:client && npm run dev:server",
-        "dev:server": "ts-node ./src/index.ts -w -p 8080 --encoder-renderer-proxy",
-        "lint": "prettier --check . && eslint src/**/*.ts",
+        "prestart": "npm ci",
+        "pack:runner": "npm --prefix runner/ run pack",
+        "pack:entry": "npm --prefix entry/ run pack",
+        "lint": "prettier --check . && eslint **/*.ts",
         "format": "prettier --write .",
-        "prepack": "npm run lint && npm run build:client && npm run build",
-        "pack": "pkg ."
+        "pack": "npm run lint && npm run pack:runner && npm run pack:entry"
     },
     "dependencies": {
-        "async-mutex": "^0.3.2",
-        "commander": "^9.4.0",
-        "express": "~4.16.4",
-        "morgan": "^1.10.0",
-        "uuid": "^3.4.0",
-        "ws": "^8.8.1"
-    },
-    "devDependencies": {
-        "@types/express": "^4.17.13",
-        "@types/morgan": "^1.9.3",
-        "@types/node": "^11.15.54",
-        "@types/ws": "^8.5.3",
-        "@typescript-eslint/eslint-plugin": "^2.34.0",
-        "@typescript-eslint/parser": "^2.34.0",
-        "eslint": "^6.8.0",
-        "pkg": "^4.5.1",
-        "prettier": "^2.7.1",
-        "ts-node": "^10.2.1",
-        "typescript": "^3.9.10"
-    },
-    "bin": {
-        "webserver": "build/index.js"
-    },
-    "pkg": {
-        "assets": [
-            "client/build/**/*"
-        ],
-        "targets": [
-            "node10-macos",
-            "node10-linux",
-            "node10-win"
-        ],
-        "outputPath": "dist"
+        "@typescript-eslint/eslint-plugin": "^5.33.1",
+        "@typescript-eslint/parser": "^5.33.1",
+        "eslint": "^8.22.0",
+        "prettier": "^2.7.1"
     }
 }

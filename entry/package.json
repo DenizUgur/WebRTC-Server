@@ -1,0 +1,39 @@
+{
+    "name": "entry",
+    "version": "1.0.0",
+    "scripts": {
+        "prestart": "npm ci",
+        "build": "tsc",
+        "build:client": "npm run --prefix client/ build",
+        "start": "node ./build/index.js",
+        "dev": "npm run build:client && npm run dev:server",
+        "dev:server": "ts-node ./src/index.ts -w -p 8080 --encoder-renderer-proxy",
+        "prepack": "npm run build:client && npm run build",
+        "pack": "pkg ."
+    },
+    "devDependencies": {
+        "@types/cors": "^2.8.12",
+        "@types/express": "^4.17.13",
+        "pkg": "^4.5.1",
+        "ts-node": "^10.9.1",
+        "typescript": "^4.7.4"
+    },
+    "bin": {
+        "runner": "build/index.js"
+    },
+    "pkg": {
+        "assets": [
+            "client/build/**/*"
+        ],
+        "targets": [
+            "node10-macos",
+            "node10-linux",
+            "node10-win"
+        ],
+        "outputPath": "dist"
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "helmet": "^5.1.1"
+    }
+}
