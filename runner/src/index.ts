@@ -4,10 +4,13 @@ import https from "https";
 import { Server } from "http";
 import fs from "fs";
 import os from "os";
+import path from "path";
 import { createServer } from "./server";
 import { AddressInfo } from "net";
 import { WSSignaling, WSProxy } from "./websocket";
 import Options from "./class/options";
+
+require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
 export class RenderStreaming {
     public static run(argv: string[]): RenderStreaming {

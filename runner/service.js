@@ -1,5 +1,5 @@
-import { Service } from "node-windows";
-import { join } from "path";
+const Service = require("node-windows").Service;
+const join = require("path").join;
 
 // Create a new service object
 var svc = new Service({
@@ -9,26 +9,35 @@ var svc = new Service({
     wait: 2,
     grow: 0.5,
     maxRetries: 5,
-    env: [
-        {
-            name: "PORT",
-            value: 8080,
-        },
-        {
-            name: "WEBSOCKET",
-            value: true,
-        },
-        {
-            name: "ENCODER_RENDERER_PROXY",
-            value: true,
-        },
-    ],
 });
 
 // Listen for the "install" event, which indicates the
 // process is available as a service.
-svc.on("install", function () {
+svc.on("install", () => {
     svc.start();
 });
 
-svc.install();
+switch (process.argv[2]) {
+    case "--install":
+        svc.install();
+        break;
+
+    case "--uninstall":
+        svc.uninstall();
+        break;
+
+    case "--start":
+        svc.start();
+        break;
+
+    case "--stop":
+        svc.stop();
+        break;
+
+    case "--restart":
+        svc.restart();
+        break;
+
+    default:
+        throw new Error("Invalid command");
+}

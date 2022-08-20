@@ -1,6 +1,7 @@
 import { WebSocketServer } from "ws";
 import { Mutex } from "async-mutex";
 import * as handler from "./class/websockethandler";
+import GameControl from "./class/gamecontrol";
 
 class WSS {
     wss: WebSocketServer;
@@ -88,11 +89,12 @@ class WSProxy extends WSS {
         }, // write data to renderer
     };
 
+    gc: GameControl;
     mutex = new Mutex();
 
     constructor() {
         super();
-
+        this.gc = new GameControl();
         this.wss = new WebSocketServer({ noServer: true });
 
         this.wss.on("connection", (ws: WebSocket, request: any) => {
@@ -109,6 +111,22 @@ class WSProxy extends WSS {
                             ...payload,
                         };
                         ws.send(JSON.stringify(this.encoderData.write));
+                    } else if (request.url == "/proxy/game") {
+                        let response: { status: string; error?: string } = {
+                            status: "ok",
+                        };
+
+                        try {
+                            if (payload.cmd == "start") await this.gc.start();
+                            else if (payload.cmd == "stop")
+                                await this.gc.stop();
+                            else if (payload.cmd == "change_level")
+                                await this.gc.changeLevel(payload.level);
+                        } catch (e) {
+                            response = { status: "error", error: e.message };
+                        }
+
+                        ws.send(JSON.stringify(response));
                     } else if (request.url == "/proxy/renderer") {
                         this.rendererData.read = {
                             ...this.rendererData.read,
