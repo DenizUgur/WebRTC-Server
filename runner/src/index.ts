@@ -1,9 +1,9 @@
 import { Command } from "commander";
-import * as express from "express";
-import * as https from "https";
+import express from "express";
+import https from "https";
 import { Server } from "http";
-import * as fs from "fs";
-import * as os from "os";
+import fs from "fs";
+import os from "os";
 import { createServer } from "./server";
 import { AddressInfo } from "net";
 import { WSSignaling, WSProxy } from "./websocket";
@@ -19,7 +19,7 @@ export class RenderStreaming {
                     .option(
                         "-p, --port <n>",
                         "Port to start the server on",
-                        process.env.PORT || `80`
+                        process.env.PORT || `8080`
                     )
                     .option(
                         "-s, --secure",

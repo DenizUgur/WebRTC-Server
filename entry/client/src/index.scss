@@ -1,13 +1,120 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;600&display=swap");
+@import "./mixins/shadow";
+
 body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-        "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    font-family: "Quicksand", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
         "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 100vw;
+    height: 100vh;
+
+    background-size: 400% 400%;
 }
 
-code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-        monospace;
+.center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+
+    width: 50vw;
+    height: fit-content;
+    max-width: 768px;
+
+    text-align: center;
+
+    background-color: white;
+    border-radius: 1rem;
+    padding: 1rem;
+
+    box-shadow: $dp_3;
+
+    h1 {
+        font-weight: 600;
+        padding: 0;
+        margin: 0;
+    }
+
+    .buttons {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+.status {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    margin: 1rem 0;
+    height: 4rem;
+    width: 100%;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 0.5rem;
+
+    width: 100%;
+    height: 4rem;
+
+    padding: 0.5rem;
+    box-shadow: $dp_2;
+
+    font-size: 1.5rem;
+    font-weight: 500;
+    text-transform: uppercase;
+
+    &:disabled {
+        box-shadow: none;
+        border: solid 1px #ccc;
+        cursor: not-allowed;
+    }
+}
+
+.green {
+    background: linear-gradient(
+        -45deg,
+        #08ff00,
+        #00f100,
+        #00e200,
+        #00cb00,
+        #00b100
+    );
+}
+
+.yellow {
+    background: linear-gradient(
+        -45deg,
+        #fff9ae,
+        #f8ed62,
+        #e9d700,
+        #dab600,
+        #a98600
+    );
+}
+
+.red {
+    background: linear-gradient(
+        -45deg,
+        #ffc185,
+        #ffaa71,
+        #ff875a,
+        #fb6944,
+        #ff4545
+    );
 }

@@ -1,7 +1,7 @@
-import * as express from "express";
-import * as path from "path";
-import * as fs from "fs";
-import * as morgan from "morgan";
+import express from "express";
+import path from "path";
+import fs from "fs";
+import morgan from "morgan";
 import signaling from "./signaling";
 import { log, LogLevel } from "./log";
 import Options from "./class/options";
