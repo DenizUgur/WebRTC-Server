@@ -1,5 +1,4 @@
 import { ChildProcess, spawn } from "child_process";
-import kill from "tree-kill";
 
 enum State {
     Idle = 1,
@@ -48,7 +47,7 @@ export default class GameControl {
                     this.state = State.Idle;
                     resolve();
                 });
-                kill(this.process.pid, "SIGINT");
+                this.process.kill("SIGINT");
             } else throw new Error("Game is not running");
         });
     }
