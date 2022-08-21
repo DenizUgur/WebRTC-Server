@@ -33,10 +33,8 @@ export default class GameControl {
                     ["--level", this.level.toString()],
                     { stdio: "ignore" }
                 );
-                this.process.on("spawn", () => {
-                    this.state = State.Running;
-                    resolve();
-                });
+                this.state = State.Running;
+                resolve();
             } else
                 throw new Error("Game is already running or not yet stopped");
         });

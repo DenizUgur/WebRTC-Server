@@ -36,7 +36,8 @@
     },
     "pkg": {
         "assets": [
-            "client/build/**/*"
+            "client/build/**/*",
+            ".env"
         ],
         "targets": [
             "node10-macos",
