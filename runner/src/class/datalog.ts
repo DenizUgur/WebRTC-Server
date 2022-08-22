@@ -15,6 +15,10 @@ type DefaultDict = {
 };
 
 export class DataDefinition {
+    private static readonly game: DefaultDict = {
+        level: { value: 0, range: { min: 0, max: 15 } },
+    };
+
     private static readonly renderer: DefaultDict = {
         antiAliasing: { value: 2, range: { valid: [0, 2, 4, 8] } },
         lodBias: { value: 2, range: { min: 0 } },
@@ -37,7 +41,7 @@ export class DataDefinition {
         },
     };
 
-    public static getInitData(type: "renderer" | "encoder"): any {
+    public static getInitData(type: "game" | "renderer" | "encoder"): any {
         const tmp = {};
         for (const key in DataDefinition[type]) {
             tmp[key] = DataDefinition[type][key].value;
@@ -48,6 +52,7 @@ export class DataDefinition {
 
     public static getConfig(): any {
         return {
+            game: DataDefinition.game,
             renderer: DataDefinition.renderer,
             encoder: DataDefinition.encoder,
         };
@@ -101,7 +106,7 @@ export class DataLog {
         return this.dumpFile.path;
     }
 
-    public flush(): void {
+    public clear(): void {
         this.initFile();
     }
 

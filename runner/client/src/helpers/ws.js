@@ -64,9 +64,9 @@ export class WS {
         switch (type) {
             case "start":
             case "stop":
-            case "change_level":
+            case "restart":
                 return this.ws.game;
-            case "flush":
+            case "clear":
                 return this.ws.server;
             default:
                 return this.ws.peer;
@@ -88,16 +88,11 @@ export class WS {
                 case "stop":
                     conn.send(JSON.stringify({ cmd: "stop" }));
                     break;
-                case "change_level":
-                    conn.send(
-                        JSON.stringify({
-                            cmd: "change_level",
-                            level: data.level,
-                        })
-                    );
+                case "restart":
+                    conn.send(JSON.stringify({ cmd: "restart" }));
                     break;
-                case "flush":
-                    conn.send(JSON.stringify({ cmd: "flush" }));
+                case "clear":
+                    conn.send(JSON.stringify({ cmd: "clear" }));
                     break;
 
                 default:

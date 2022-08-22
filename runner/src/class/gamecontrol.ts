@@ -23,6 +23,10 @@ export default class GameControl {
             throw new Error("GAME_BIN_PATH is not set");
     }
 
+    public updateParams(params: { level: number }): void {
+        this.level = clamp(params.level, 0, 15);
+    }
+
     public async start(): Promise<void> {
         return new Promise((resolve) => {
             if (this.state === State.Idle) {
@@ -52,8 +56,7 @@ export default class GameControl {
         });
     }
 
-    public async changeLevel(level: number): Promise<void> {
-        this.level = clamp(level, 0, 15);
+    public async restart(): Promise<void> {
         await this.stop();
         await this.start();
     }

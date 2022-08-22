@@ -27,22 +27,18 @@ export default function App() {
             <div className={styles.player}>
                 <Player state={state} codecMimeType="video/H264" />
                 <div>
-                    <button onClick={() => setState(!state)}>Play</button>
+                    <button onClick={() => setState(!state)}>{state ? "Pause" : "Play"} Stream</button>
                     <button onClick={() => ws.current.command("start")}>
                         Start Game
                     </button>
                     <button onClick={() => ws.current.command("stop")}>
                         Stop Game
                     </button>
-                    <button
-                        onClick={() =>
-                            ws.current.command("change_level", { level: 2 })
-                        }
-                    >
-                        Change Level
+                    <button onClick={() => ws.current.command("restart")}>
+                        Restart Game
                     </button>
-                    <button onClick={() => ws.current.command("flush")}>
-                        Flush Log
+                    <button onClick={() => ws.current.command("clear")}>
+                        Start New Log
                     </button>
                     <button onClick={() => window.open("/datalog", "_blank")}>
                         Download Log

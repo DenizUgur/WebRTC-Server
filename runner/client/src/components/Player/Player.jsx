@@ -81,12 +81,7 @@ function Player(props) {
 
     function stop() {
         if (receiver === null) return;
-        let element = player.current;
-        while (element.firstChild) {
-            element.removeChild(element.firstChild);
-        }
         receiver.stop();
-        element.load();
         setReceiver(null);
     }
 

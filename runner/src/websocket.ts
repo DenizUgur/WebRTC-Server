@@ -70,6 +70,7 @@ class WSSignaling extends WSS {
 }
 
 class WSProxy extends WSS {
+    gameData = DataDefinition.getInitData("game");
     rendererData = DataDefinition.getInitData("renderer");
     encoderData = DataDefinition.getInitData("encoder");
 
@@ -106,25 +107,31 @@ class WSProxy extends WSS {
                         this.dl.add(this.rendererData.read, "renderer", true);
                         ws.send(JSON.stringify(this.rendererData.write));
                     } else if (request.url == "/proxy/server") {
-                        if (payload.cmd == "flush") this.dl.flush();
+                        if (payload.cmd == "clear") this.dl.clear();
                         ws.send(JSON.stringify({ status: "ok" }));
                     } else if (request.url == "/proxy/game") {
                         let response: { status: string; error?: string } = {
                             status: "ok",
                         };
 
+                        this.gc.updateParams(this.gameData.write);
+
                         try {
                             if (payload.cmd == "start") await this.gc.start();
                             else if (payload.cmd == "stop")
                                 await this.gc.stop();
-                            else if (payload.cmd == "change_level")
-                                await this.gc.changeLevel(payload.level);
+                            else if (payload.cmd == "restart")
+                                await this.gc.restart();
                         } catch (e) {
                             response = { status: "error", error: e.message };
                         }
 
                         ws.send(JSON.stringify(response));
                     } else if (request.url == "/proxy/peer") {
+                        this.gameData.write = {
+                            ...this.gameData.write,
+                            ...payload?.game,
+                        };
                         this.encoderData.write = {
                             ...this.encoderData.write,
                             ...payload?.encoder,
@@ -135,6 +142,7 @@ class WSProxy extends WSS {
                         };
                         ws.send(
                             JSON.stringify({
+                                ...this.gameData.read,
                                 ...this.encoderData.read,
                                 ...this.rendererData.read,
                             })
