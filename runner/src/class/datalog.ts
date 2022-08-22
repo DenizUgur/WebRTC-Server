@@ -63,7 +63,7 @@ export class DataLog {
 
     private constructor() {
         this.dumpFile = {
-            path: path.join(os.tmpdir(), "datalog.raw"),
+            path: path.join(os.tmpdir(), "datalog.csv"),
             init: false,
         };
         this.headers = { renderer: [], encoder: [] };
