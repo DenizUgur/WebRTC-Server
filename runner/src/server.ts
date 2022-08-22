@@ -28,7 +28,7 @@ export const createServer = (config: Options): express.Application => {
     app.get("/datalog", (req, res) => {
         const datalog = DataLog.getInstance();
         if (datalog.getFile()) {
-            res.sendFile(datalog.getFile());
+            res.download(datalog.getFile());
         } else {
             res.status(400).send("No datalog has been created yet.");
         }

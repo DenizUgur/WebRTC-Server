@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import styles from "./Player.module.scss";
 
 import { Receiver } from "../../lib/receiver.js";
 import { getServerConfig } from "../../lib/internal/config.js";
@@ -95,6 +94,7 @@ function Player(props) {
         if (state) play();
         else stop();
         return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state]);
 
     return <video ref={player} />;
