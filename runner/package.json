@@ -2,8 +2,6 @@
     "name": "runner",
     "version": "1.0.0",
     "scripts": {
-        "postinstall": "npm run prepack && node setup.js --init",
-        "update": "npm run prepack && node setup.js --update",
         "build": "tsc",
         "build:client": "npm run --prefix client/ build",
         "start": "node ./build/index.js",

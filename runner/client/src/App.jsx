@@ -1,16 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./App.module.scss";
 
-import { Player } from "./components";
+import { Control, Player } from "./components";
 import { WS } from "./helpers/ws";
 
 export default function App() {
     const [state, setState] = useState(false);
+    const [config, setConfig] = useState(null);
     const ws = useRef(null);
 
     useEffect(() => {
         ws.current = WS.getInstance();
         ws.current.connect();
+
+        fetch("/config")
+            .then((res) => res.json())
+            .then(setConfig);
 
         return () => {
             ws.current.disconnect();
@@ -44,7 +49,29 @@ export default function App() {
                     </button>
                 </div>
             </div>
-            <div className={styles.control}></div>
+            <div className={styles.control}>
+                {config &&
+                    Object.keys(config.dataConfig).map((type) => {
+                        const items = Object.keys(config.dataConfig[type]).map(
+                            (key) => {
+                                return (
+                                    <Control
+                                        key={key}
+                                        name={key}
+                                        type={type}
+                                        data={config.dataConfig[type][key]}
+                                    />
+                                );
+                            }
+                        );
+                        return (
+                            <div key={type}>
+                                <h3>{type} settings</h3>
+                                <div>{items}</div>
+                            </div>
+                        );
+                    })}
+            </div>
         </div>
     );
 }

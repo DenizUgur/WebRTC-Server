@@ -18,22 +18,22 @@ export class DataDefinition {
     private static readonly renderer: DefaultDict = {
         antiAliasing: { value: 2, range: { valid: [0, 2, 4, 8] } },
         lodBias: { value: 2, range: { min: 0 } },
-        masterTextureLimit: { value: 0, range: { min: 1 } },
+        masterTextureLimit: { value: 0, range: { min: 0 } },
         pixelLightCount: { value: 4, range: { min: 0 } },
         realtimeReflectionProbes: { value: true, range: { boolean: true } },
         shadowCascades: { value: 4, range: { min: 0 } },
         shadowDistance: { value: 150, range: { min: 0 } },
         softParticles: { value: true, range: { boolean: true } },
-        vSyncCount: { value: 0, range: { valid: [1, 2, 3, 4] } },
+        vSyncCount: { value: 0, range: { valid: [0, 1, 2, 3, 4] } },
         targetFrameRate: { value: 60, range: { min: 0, max: 170 } },
     };
 
     private static readonly encoder: DefaultDict = {
         encoder_fps: { value: 30, range: { min: 1, max: 60 } },
-        encoder_bitrate: { value: 4e6, range: { min: 3e5, max: 9e7 } },
+        encoder_bitrate: { value: 4e6, range: { min: 0, max: 9e7 } },
         encoder_bandwidth_allocation: {
             value: 4e6,
-            range: { min: 3e5, max: 9e7 },
+            range: { min: 0, max: 9e7 },
         },
     };
 
