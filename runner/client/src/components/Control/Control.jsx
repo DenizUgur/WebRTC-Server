@@ -48,27 +48,12 @@ export default function Control(props) {
                 ))}
             </select>
         );
-    } else if (data.range.max) {
-        const fix = (v) => (v < 1e4 ? v : v.toExponential(1));
-        control = (
-            <>
-                <b>({fix(state)}) </b>
-                {fix(data.range.min)}
-                <input
-                    type="range"
-                    min={data.range.min}
-                    max={data.range.max}
-                    defaultValue={data.value}
-                    onChange={handler()}
-                />
-                {fix(data.range.max)}
-            </>
-        );
     } else {
         control = (
             <input
                 type="number"
                 min={data.range.min}
+                {...(data.range.max && { max: data.range.max })}
                 defaultValue={data.value}
                 onChange={handler()}
             />
