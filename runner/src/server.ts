@@ -6,6 +6,7 @@ import signaling from "./signaling";
 import { log, LogLevel } from "./log";
 import Options from "./class/options";
 import { reset as resetHandler } from "./class/httphandler";
+import { DataDefinition, DataLog } from "./class/datalog";
 
 export const createServer = (config: Options): express.Application => {
     const app: express.Application = express();
@@ -21,8 +22,17 @@ export const createServer = (config: Options): express.Application => {
             useWebSocket: config.websocket,
             startupMode: config.mode,
             logging: config.logging,
+            dataConfig: DataDefinition.getConfig(),
         })
     );
+    app.get("/datalog", (req, res) => {
+        const datalog = DataLog.getInstance();
+        if (datalog.getFile()) {
+            res.sendFile(datalog.getFile());
+        } else {
+            res.status(400).send("No datalog has been created yet.");
+        }
+    });
     app.use("/signaling", signaling);
     app.use(express.static(path.join(__dirname, "../client/build")));
     app.get("/", (req, res) => {

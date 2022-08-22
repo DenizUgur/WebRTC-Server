@@ -2,6 +2,7 @@ import { WebSocketServer } from "ws";
 import { Mutex } from "async-mutex";
 import * as handler from "./class/websockethandler";
 import GameControl from "./class/gamecontrol";
+import { DataDefinition, DataLog } from "./class/datalog";
 
 class WSS {
     wss: WebSocketServer;
@@ -69,32 +70,17 @@ class WSSignaling extends WSS {
 }
 
 class WSProxy extends WSS {
-    encoderData = {
-        read: {}, // read data from encoder
-        write: {}, // write data to encoder
-    };
-    rendererData = {
-        read: {}, // read data from renderer
-        write: {
-            antiAliasing: 2,
-            lodBias: 2,
-            masterTextureLimit: 0,
-            pixelLightCount: 4,
-            realtimeReflectionProbes: true,
-            shadowCascades: 4,
-            shadowDistance: 150,
-            softParticles: true,
-            vSyncCount: 0,
-            targetFrameRate: 60,
-        }, // write data to renderer
-    };
+    rendererData = DataDefinition.getInitData("renderer");
+    encoderData = DataDefinition.getInitData("encoder");
 
     gc: GameControl;
+    dl: DataLog;
     mutex = new Mutex();
 
     constructor() {
         super();
         this.gc = new GameControl();
+        this.dl = DataLog.getInstance();
         this.wss = new WebSocketServer({ noServer: true });
 
         this.wss.on("connection", (ws: WebSocket, request: any) => {
@@ -110,7 +96,18 @@ class WSProxy extends WSS {
                             ...this.encoderData.read,
                             ...payload,
                         };
+                        this.dl.add(this.encoderData.read, "encoder");
                         ws.send(JSON.stringify(this.encoderData.write));
+                    } else if (request.url == "/proxy/renderer") {
+                        this.rendererData.read = {
+                            ...this.rendererData.read,
+                            ...payload,
+                        };
+                        this.dl.add(this.rendererData.read, "renderer", true);
+                        ws.send(JSON.stringify(this.rendererData.write));
+                    } else if (request.url == "/proxy/server") {
+                        if (payload.cmd == "flush") this.dl.flush();
+                        ws.send(JSON.stringify({ status: "ok" }));
                     } else if (request.url == "/proxy/game") {
                         let response: { status: string; error?: string } = {
                             status: "ok",
@@ -127,20 +124,14 @@ class WSProxy extends WSS {
                         }
 
                         ws.send(JSON.stringify(response));
-                    } else if (request.url == "/proxy/renderer") {
-                        this.rendererData.read = {
-                            ...this.rendererData.read,
-                            ...payload,
-                        };
-                        ws.send(JSON.stringify(this.rendererData.write));
                     } else if (request.url == "/proxy/peer") {
                         this.encoderData.write = {
                             ...this.encoderData.write,
-                            ...payload.encoder,
+                            ...payload?.encoder,
                         };
                         this.rendererData.write = {
                             ...this.rendererData.write,
-                            ...payload.renderer,
+                            ...payload?.renderer,
                         };
                         ws.send(
                             JSON.stringify({
