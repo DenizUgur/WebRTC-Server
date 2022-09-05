@@ -2,15 +2,19 @@
     "name": "runner",
     "version": "1.0.0",
     "scripts": {
-        "build": "tsc",
+        "build": "tsc --skipLibCheck --noEmit && npm run build:swc",
+        "build:swc": "swc src --out-dir build",
         "build:client": "npm run --prefix client/ build",
         "start": "node ./build/index.js",
         "dev": "npm run build:client && npm run dev:server",
-        "dev:server": "ts-node ./src/index.ts -w -p 80,8080 --encoder-renderer-proxy",
+        "dev:server": "node -r @swc-node/register ./src/index.ts -w -p 80,8080 --encoder-renderer-proxy",
         "prepack": "npm run build:client && npm run build",
         "pack": "pkg ."
     },
     "dependencies": {
+        "@swc-node/register": "^1.5.1",
+        "@swc/cli": "^0.1.57",
+        "@swc/core": "^1.2.247",
         "async-mutex": "^0.3.2",
         "commander": "^9.4.0",
         "dotenv": "^16.0.1",

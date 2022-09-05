@@ -4,15 +4,19 @@
     "scripts": {
         "postinstall": "npm --prefix client/ install && npm run prepack && node setup.js --init",
         "update": "npm run prepack && node setup.js --update",
-        "build": "tsc",
+        "build": "tsc --skipLibCheck --noEmit && npm run build:swc",
+        "build:swc": "swc src --out-dir build",
         "build:client": "npm run --prefix client/ build",
         "start": "node -r dotenv/config ./build/index.js",
         "dev": "npm run build:client && npm run dev:server",
-        "dev:server": "ts-node -r dotenv/config ./src/index.ts",
+        "dev:server": "node -r @swc-node/register -r dotenv/config ./src/index.ts",
         "prepack": "npm run build:client && npm run build",
         "pack": "pkg ."
     },
     "dependencies": {
+        "@swc-node/register": "^1.5.1",
+        "@swc/cli": "^0.1.57",
+        "@swc/core": "^1.2.247",
         "aws-sdk": "^2.1199.0",
         "cors": "^2.8.5",
         "dotenv": "^16.0.1",
