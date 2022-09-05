@@ -6,7 +6,7 @@
         "build:client": "npm run --prefix client/ build",
         "start": "node ./build/index.js",
         "dev": "npm run build:client && npm run dev:server",
-        "dev:server": "ts-node ./src/index.ts -w -p 8080 --encoder-renderer-proxy",
+        "dev:server": "ts-node ./src/index.ts -w -p 80,8080 --encoder-renderer-proxy",
         "prepack": "npm run build:client && npm run build",
         "pack": "pkg ."
     },

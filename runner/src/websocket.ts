@@ -3,6 +3,8 @@ import { Mutex } from "async-mutex";
 import * as handler from "./class/websockethandler";
 import GameControl from "./class/gamecontrol";
 import { DataDefinition, DataLog } from "./class/datalog";
+import { Server as httpsServer } from "https";
+import { Server as httpServer } from "http";
 
 class WSS {
     wss: WebSocketServer;
@@ -16,10 +18,10 @@ class WSS {
 }
 
 class WSSignaling extends WSS {
-    constructor(mode: string) {
+    constructor(mode: string, server: httpsServer | httpServer) {
         super();
 
-        this.wss = new WebSocketServer({ noServer: true });
+        this.wss = new WebSocketServer({ server });
         handler.reset(mode);
 
         this.wss.on("connection", (ws: WebSocket) => {
@@ -78,11 +80,11 @@ class WSProxy extends WSS {
     dl: DataLog;
     mutex = new Mutex();
 
-    constructor() {
+    constructor(port: number) {
         super();
         this.gc = new GameControl();
         this.dl = DataLog.getInstance();
-        this.wss = new WebSocketServer({ noServer: true });
+        this.wss = new WebSocketServer({ port });
 
         this.wss.on("connection", (ws: WebSocket, request: any) => {
             ws.onmessage = async (event: MessageEvent): Promise<void> => {

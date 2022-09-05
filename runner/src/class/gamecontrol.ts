@@ -33,7 +33,14 @@ export default class GameControl {
                 this.state = State.Starting;
                 this.process = spawn(
                     process.env.GAME_BIN_PATH,
-                    ["--level", this.level.toString()],
+                    [
+                        "--level",
+                        this.level.toString(),
+                        "--send-interval",
+                        "0.2",
+                        "--update-interval",
+                        "0.2",
+                    ],
                     { stdio: "ignore" }
                 );
                 this.state = State.Running;

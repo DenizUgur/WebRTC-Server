@@ -21,8 +21,8 @@ export class RenderStreaming {
                     .usage("[options] <apps...>")
                     .option(
                         "-p, --port <n>",
-                        "Port to start the server on",
-                        process.env.PORT || `8080`
+                        "Port to start the server and proxy on. Note: ports are seperated by comma",
+                        process.env.PORT || `80,8080`
                     )
                     .option(
                         "-s, --secure",
@@ -61,8 +61,12 @@ export class RenderStreaming {
                     )
                     .parse(argv);
                 const option = program.opts();
+                const ports = option.port
+                    .split(",")
+                    .map((x: string) => parseInt(x));
                 return {
-                    port: option.port,
+                    port: ports[0],
+                    proxyPort: ports[1],
                     secure: option.secure == undefined ? false : option.secure,
                     keyfile: option.keyfile,
                     certfile: option.certfile,
@@ -122,49 +126,24 @@ export class RenderStreaming {
             console.log(
                 `start websocket signaling server ws://${
                     this.getIPAddress()[0]
-                }`
+                }:${this.options.port}`
             );
             //Start Websocket Signaling server
-            this.WSSignalingInstance = new WSSignaling(this.options.mode);
+            this.WSSignalingInstance = new WSSignaling(
+                this.options.mode,
+                this.server
+            );
         }
 
         if (this.options.encoderRendererProxy) {
+            console.log(
+                `start websocket proxy server ws://${this.getIPAddress()[0]}:${
+                    this.options.proxyPort
+                }`
+            );
             //Start Websocket Proxy server
-            this.WSProxyInstance = new WSProxy();
+            this.WSProxyInstance = new WSProxy(this.options.proxyPort);
         }
-
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const that = this;
-        this.server.on("upgrade", function upgrade(request: any, socket, head) {
-            const baseURL =
-                request.protocol + "://" + request.headers.host + "/";
-            const { pathname } = new URL(request.url, baseURL);
-
-            let wss: any;
-            if (pathname === "/" && that.WSSignalingInstance) {
-                wss = that.WSSignalingInstance.getWebsocketServer();
-                wss.handleUpgrade(
-                    request,
-                    socket,
-                    head,
-                    function done(ws: any) {
-                        wss.emit("connection", ws, request);
-                    }
-                );
-            } else if (pathname.startsWith("/proxy") && that.WSProxyInstance) {
-                wss = that.WSProxyInstance.getWebsocketServer();
-                wss.handleUpgrade(
-                    request,
-                    socket,
-                    head,
-                    function done(ws: any) {
-                        wss.emit("connection", ws, request);
-                    }
-                );
-            } else {
-                socket.destroy();
-            }
-        });
 
         console.log(`start as ${this.options.mode} mode`);
     }

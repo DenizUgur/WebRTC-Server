@@ -72,7 +72,7 @@ export default function App() {
 
         if (cmd === "open") {
             if (state.response?.url)
-                window.open(`http://${state.response.url}:8080`, "_blank");
+                window.open(`http://${state.response.url}`, "_blank");
             setState({
                 ...state,
                 loading: false,

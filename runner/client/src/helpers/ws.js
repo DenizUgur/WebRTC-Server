@@ -21,19 +21,19 @@ export class WS {
         const promises = [
             new Promise((resolve) => {
                 this.ws.peer = new WebSocket(
-                    `ws://${window.location.host}/proxy/peer`
+                    `ws://${window.location.hostname}:8080/proxy/peer`
                 );
                 this.ws.peer.onopen = resolve;
             }),
             new Promise((resolve) => {
                 this.ws.game = new WebSocket(
-                    `ws://${window.location.host}/proxy/game`
+                    `ws://${window.location.hostname}:8080/proxy/game`
                 );
                 this.ws.game.onopen = resolve;
             }),
             new Promise((resolve) => {
                 this.ws.server = new WebSocket(
-                    `ws://${window.location.host}/proxy/server`
+                    `ws://${window.location.hostname}:8080/proxy/server`
                 );
                 this.ws.server.onopen = resolve;
             }),
