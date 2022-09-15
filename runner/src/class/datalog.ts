@@ -4,11 +4,11 @@ import path from "path";
 
 type DefaultDict = {
     [key: string]: {
-        value: number | boolean;
+        value: number | string | boolean;
         range: {
             min?: number;
             max?: number;
-            valid?: number[];
+            valid?: number[] | string[];
             boolean?: boolean;
         };
     };
@@ -17,6 +17,10 @@ type DefaultDict = {
 export class DataDefinition {
     private static readonly game: DefaultDict = {
         level: { value: 0, range: { min: 0, max: 15 } },
+        game: {
+            value: "FlyDangerous",
+            range: { valid: ["FlyDangerous", "FPS"] },
+        },
     };
 
     private static readonly renderer: DefaultDict = {

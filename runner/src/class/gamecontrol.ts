@@ -13,26 +13,38 @@ const clamp = (num: number, min: number, max: number) =>
 export default class GameControl {
     private state: State;
     private level: number;
+    private game: string;
     private process: ChildProcess;
 
-    constructor(level = 0) {
+    constructor(level = 0, game = "FlyDangerous") {
         this.state = State.Idle;
+        this.game = game;
         this.level = clamp(level, 0, 15);
 
-        if (process.env.GAME_BIN_PATH === undefined)
-            throw new Error("GAME_BIN_PATH is not set");
+        if (process.env.GAME_FD_BIN_PATH === undefined)
+            throw new Error("GAME_FD_BIN_PATH is not set");
+
+        if (process.env.GAME_FPS_BIN_PATH === undefined)
+            throw new Error("GAME_FPS_BIN_PATH is not set");
     }
 
-    public updateParams(params: { level: number }): void {
+    public updateParams(params: { level: number; game: string }): void {
         this.level = clamp(params.level, 0, 15);
+        this.game = params.game;
     }
 
     public async start(): Promise<void> {
         return new Promise((resolve) => {
             if (this.state === State.Idle) {
                 this.state = State.Starting;
+
+                const bin_path =
+                    this.game === "FlyDangerous"
+                        ? process.env.GAME_FD_BIN_PATH
+                        : process.env.GAME_FPS_BIN_PATH;
+
                 this.process = spawn(
-                    process.env.GAME_BIN_PATH,
+                    bin_path,
                     [
                         "--level",
                         this.level.toString(),
