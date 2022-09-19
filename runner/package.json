@@ -6,6 +6,7 @@
         "build:swc": "swc src --out-dir build",
         "build:client": "npm run --prefix client/ build",
         "start": "node ./build/index.js",
+        "update": "git fetch --all && git reset --hard origin/main",
         "dev": "npm run build:client && npm run dev:server",
         "dev:server": "node -r @swc-node/register ./src/index.ts -w -p 80,8080 --encoder-renderer-proxy",
         "prepack": "npm run build:client && npm run build",
