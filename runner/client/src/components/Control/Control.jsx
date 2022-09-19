@@ -20,9 +20,12 @@ export default function Control(props) {
             };
         } else {
             return (e) => {
-                setState(parseInt(e.target.value));
+                const value = isNaN(e.target.value)
+                    ? e.target.value
+                    : +e.target.value;
+                setState(value);
                 ws.current.command("peer", {
-                    [type]: { [name]: parseInt(e.target.value) },
+                    [type]: { [name]: value },
                 });
             };
         }
