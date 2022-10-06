@@ -37,6 +37,7 @@ export class DataDefinition {
     };
 
     private static readonly encoder: DefaultDict = {
+        override_set_rates: { value: false, range: { boolean: true } },
         encoder_fps: { value: 30, range: { min: 1, max: 60 } },
         encoder_bitrate: { value: 4e6, range: { min: 0, max: 9e7 } },
         encoder_bandwidth_allocation: {
