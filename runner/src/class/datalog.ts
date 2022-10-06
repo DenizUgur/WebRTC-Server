@@ -71,6 +71,10 @@ export class DataLog {
     private data: { renderer: any[]; encoder: any[] };
 
     private constructor() {
+        this.clear();
+    }
+
+    public clear(): void {
         this.dumpFile = {
             path: path.join(os.tmpdir(), "datalog.csv"),
             init: false,
@@ -108,10 +112,6 @@ export class DataLog {
         if (!this.dumpFile.init) return false;
         if (!fs.existsSync(this.dumpFile.path)) return false;
         return this.dumpFile.path;
-    }
-
-    public clear(): void {
-        this.initFile();
     }
 
     public add(
