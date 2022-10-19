@@ -76,6 +76,33 @@ class WSProxy extends WSS {
     rendererData = DataDefinition.getInitData("renderer");
     encoderData = DataDefinition.getInitData("encoder");
 
+    health = {
+        encoder: {
+            alive: false,
+            lastAlive: 0,
+        },
+        renderer: {
+            alive: false,
+            lastAlive: 0,
+        },
+    };
+
+    healthCheck(body?): void {
+        const now = Date.now();
+        const threshold = 5000;
+
+        if (body == null) {
+            this.health.encoder.alive = this.health["encoder"].lastAlive + threshold > now;
+            this.health.renderer.alive = this.health["renderer"].lastAlive + threshold > now;
+            return;
+        }
+
+        this.health[body] = {
+            alive:  this.health[body].lastAlive + threshold > now,
+            lastAlive: now,
+        };
+    }
+
     gc: GameControl;
     dl: DataLog;
     mutex = new Mutex();
@@ -99,6 +126,7 @@ class WSProxy extends WSS {
                             ...this.encoderData.read,
                             ...payload,
                         };
+                        this.healthCheck("encoder");
                         this.dl.add(this.encoderData.read, "encoder");
                         ws.send(JSON.stringify(this.encoderData.write));
                     } else if (request.url == "/proxy/renderer") {
@@ -106,11 +134,18 @@ class WSProxy extends WSS {
                             ...this.rendererData.read,
                             ...payload,
                         };
+                        this.healthCheck("renderer");
                         this.dl.add(this.rendererData.read, "renderer", true);
                         ws.send(JSON.stringify(this.rendererData.write));
                     } else if (request.url == "/proxy/server") {
                         if (payload.cmd == "clear") this.dl.clear();
-                        ws.send(JSON.stringify({ status: "ok" }));
+                        this.healthCheck();
+                        ws.send(
+                            JSON.stringify({
+                                status: "ok",
+                                health: this.health,
+                            })
+                        );
                     } else if (request.url == "/proxy/game") {
                         let response: { status: string; error?: string } = {
                             status: "ok",
